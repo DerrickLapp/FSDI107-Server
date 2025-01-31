@@ -17,3 +17,14 @@ for MAC source venv/bin/activate
 
 for WIN py -m pip install flask
 for MAC python3 -m pip install flask
+
+"Pymongo Methods"
+find({})
+find_one_and_update
+insert_one
+delete_one
+delete_many
+update_one
+update_many
+
+If need to set up a different port in flask, app.run(debug=True, port="New port number")

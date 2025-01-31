@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import json
 from http import HTTPStatus
+from config import db
 
 app = Flask(__name__)
 
@@ -25,14 +26,27 @@ def about():
     name = {"name": "Derrick test"}
     return json.dumps(name)
 
+@app.get("/about-me")
+def about_me():
+    user_name = "Derrick"
+    return render_template("about-me.html", name=user_name)
 
 products = []
+
+def fix_id(obj):
+    obj["_id"] = str(obj["_id"])
+    return obj
 
 
 # GET all products
 @app.get("/api/products")
 def get_products():
-    return json.dumps(products), HTTPStatus.OK
+    products_db = []
+    cursor = db.products.find({})
+    for product in cursor:
+        print("product", product)
+        products_db.append(fix_id(product))
+    return json.dumps(products_db), HTTPStatus.OK
 
 
 # POST a product
@@ -40,7 +54,8 @@ def get_products():
 def save_product():
     product = request.get_json()
     print(f"product {product}")
-    products.append(product)
+    # products.append(product)
+    db.products.insert_one(product)
     return "Product saved!", 201
 
 
@@ -71,4 +86,6 @@ def delete_product(index):
 @app.get("/api/products/count")
 def product_counter():
     return "There are " + str(len(products)) + " product(s) in the List, currently."
+
+
 app.run(debug=True)
