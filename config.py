@@ -5,4 +5,4 @@ connection_string = "mongodb+srv://FortuneCookie14:FSDI107Ch54@fsdi-107.z4ooh.mo
 
 client = pymongo.MongoClient(connection_string, tlsCAFile=certifi.where())
 
-db = client.get_database("organika")
+db = client.get_database("Not-So-LocalStore")

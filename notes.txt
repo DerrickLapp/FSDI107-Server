@@ -6,12 +6,17 @@ for MAC python3 -m pip install virtualenv
 2) Let's use the library that we just installed
 
 for WIN py -m venv venv
+then do py -m install flask pymongo "pymongo[srv]" certifi
+
+
 for MAC python3 -m venv venv
+then do python3 -m install flask pymongo "pymongo[srv]" certifi
+
 
 3)lets launch the virtual environment (this is something that needs to be executed every time that I want to work with this project)
 
-for WIN venv\Scripts\activate
-for MAC source venv/bin/activate
+for WIN: venv\Scripts\activate
+for MAC: source venv/bin/activate
 
 4) Install flask
 

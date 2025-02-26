@@ -2,8 +2,11 @@ from flask import Flask, request, render_template
 import json
 from http import HTTPStatus
 from config import db
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app) #Warning: This disables CORS policy
 
 
 # End point of API
@@ -44,7 +47,6 @@ def get_products():
     products_db = []
     cursor = db.products.find({})
     for product in cursor:
-        print("product", product)
         products_db.append(fix_id(product))
     return json.dumps(products_db), HTTPStatus.OK
 
@@ -53,10 +55,39 @@ def get_products():
 @app.post("/api/products")
 def save_product():
     product = request.get_json()
-    print(f"product {product}")
-    # products.append(product)
     db.products.insert_one(product)
-    return "Product saved!", 201
+    return json.dumps(fix_id(product))
+
+########################################################################
+########################### COUPON CODES ###############################
+########################################################################
+
+#Post to coupons
+@app.post("/api/coupons")
+def save_coupon():
+    coupon = request.get_json()
+    db.coupons.insert_one(coupon)
+    return json.dumps(fix_id(coupon))
+
+#Get from coupons
+@app.get("/api/coupons")
+def get_coupons():
+    coupons_db = []
+    cursor = db.coupons.find({})
+    for coupon in cursor:
+        coupons_db.append(fix_id(coupon))
+    return json.dumps(coupons_db), HTTPStatus.OK
+
+
+
+
+
+
+
+
+
+###### Other End Points #######
+
 
 
 # PUT a product
@@ -85,7 +116,24 @@ def delete_product(index):
 # Endpoint that shows List Length
 @app.get("/api/products/count")
 def product_counter():
-    return "There are " + str(len(products)) + " product(s) in the List, currently."
+    products_db = []
+    cursor = db.products.find({})
+    for product in cursor:
+        print("product", product)
+        products_db.append(fix_id(product))
+    return "There are " + str(len(products_db)) + " product(s) in the List, currently."
 
+# Endpoint that tallies specific categories
+@app.get("/api/products/<category>")
+def cata_counter(category):
+    products_db = []
+    cursor = db.products.find({})
+    for product in cursor:
+        products_db.append(fix_id(product))
+    counted_category = 0
+    for products_db in products_db:
+        if products_db['category'] == category:
+            counted_category += 1
+    return "There are " + str(counted_category) + " items in the category: " + category
 
 app.run(debug=True)
